@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ Returns JSON."""
 
+from flask import Flask
 from flask import jsonify
 from models import storage
 from api.v1.views import app_views, Amenity, City, Place, Review, State, User
