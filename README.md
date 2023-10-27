@@ -161,5 +161,5 @@ Second part of Airbnb: Joann Vuong
 ## License
 Public Domain. No copy write protection.
 
-## This project is to be carried out in a team of two, by:
-Endurance Aneke and Abel Sekibaala. 
+## This project is carried out by:
+Endurance Aneke. 
