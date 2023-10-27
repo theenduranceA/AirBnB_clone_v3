@@ -54,7 +54,7 @@ def creates_city(state_id):
     if 'name' not in data:
         return jsonify({"error": "Missing name"}, 400)
 
-    city = 7City(**data)
+    city = City(**data)
     city.state_id = state_id
     city.save()
 
