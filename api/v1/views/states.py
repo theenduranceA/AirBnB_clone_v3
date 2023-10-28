@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Modules for states."""
 
+from api.v1.views import *
 from flask import Flask, request, jsonify
 from api.v1.views import app_views
 from models import storage
