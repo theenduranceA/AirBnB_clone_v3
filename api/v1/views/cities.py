@@ -35,7 +35,7 @@ def deletes_city(city_id):
     city = storage.get(City, city_id)
     if city is None:
         abort(404)
-    storage.delete(city)
+    city.delete()
     storage.save()
     return jsonify({})
 
@@ -52,7 +52,7 @@ def creates_city(state_id):
     if data is None:
         abort(400, "Not a JSON")
     if 'name' not in data:
-        abort("Missing name")
+        abort(400, "Missing name")
 
     city = City(**data)
     city.state_id = state_id
@@ -76,5 +76,5 @@ def updates_city(city_id):
         if key not in ['id', 'state_id', 'created_at', 'updated_at']:
             setattr(city, key, value)
 
-    city.save()
-    return jsonify(city.to_dict()), 200
+    storage.save()
+    return jsonify(city.to_dict())
