@@ -30,9 +30,9 @@ def deletes_state(state_id):
     state = storage.get(State, state_id)
     if state is None:
         abort jsonify(404)
-    storage.delete(state)
+    state.delete()
     storage.save()
-    return jsonify({}, 200)
+    return jsonify({})
 
 
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
@@ -42,7 +42,7 @@ def creates_state():
     if data is None:
         abort(400, "Not a JSON")
     if 'name' not in data:
-        abort("Missing name")
+        abort(400, "Missing name")
     state = State(**data)
     state.save()
     return jsonify(state.to_dict()), 201
@@ -64,4 +64,4 @@ def updates_state(state_id):
             setattr(state, key, value)
 
     state.save()
-    return jsonify(state.to_dict()), 200
+    return jsonify(state.to_dict())
