@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 """Modules for states."""
 
-from flask import Flask, request, jsonify
+from models.state import State
+from flask import Flask, request, jsonify, abort
 from api.v1.views import app_views
 from models import storage
 
@@ -27,9 +28,9 @@ def gets_state(state_id):
 def deletes_state(state_id):
     """ Deletes a State object."""
     state = storage.get(State, state_id)
-    if _state is None:
+    if state is None:
         abort(404)
-    storage.delete(state)
+    storage.delete()
     storage.save()
     return jsonify({})
 
@@ -62,5 +63,5 @@ def updates_state(state_id):
         if key not in ['id', 'created_at', 'updated_at']:
             setattr(state, key, value)
 
-    state.save()
-    return jsonify(state.to_dict()), 200
+    storage.save()
+    return jsonify(state.to_dict())
