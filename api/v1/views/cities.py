@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ Module for cities."""
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort
 from api.v1.views import app_views
 from models import storage
 from models.state import State
@@ -14,7 +14,7 @@ def get_all_cities(state_id):
     """ Retrieves the list of all city objects."""
     state = storage.get(State, state_id)
     if state is None:
-        return jsonify({"error": "Not found"}, 404)
+        abort(404)
 
     cities = [city.to_dict() for city in state.cities]
     return jsonify(cities)
@@ -25,7 +25,7 @@ def gets_city(city_id):
     """ Retrieves city object."""
     city = storage.get(City, city_id)
     if city is None:
-        return jsonify({"error": "Not found"}, 404)
+        abort(404)
     return jsonify(city.to_dict())
 
 
@@ -34,7 +34,7 @@ def deletes_city(city_id):
     """ Deletes city."""
     city = storage.get(City, city_id)
     if city is None:
-        return jsonify({"error": "Not found"}, 404)
+        abort(404)
     storage.delete(city)
     storage.save()
     return jsonify({})
@@ -46,13 +46,13 @@ def creates_city(state_id):
     """ Creates city."""
     state = storage.get(State, state_id)
     if state is None:
-        return jsonify({"error": "Not found"}, 404)
+        abort(404)
 
     data = request.get_json()
     if data is None:
-        return jsonify({"error": "Not a JSON"}, 400)
+        abort(400, "Not a JSON")
     if 'name' not in data:
-        return jsonify({"error": "Missing name"}, 400)
+        abort("Missing name")
 
     city = City(**data)
     city.state_id = state_id
@@ -66,11 +66,11 @@ def updates_city(city_id):
     """ Updates city."""
     city = storage.get(City, city_id)
     if city is None:
-        return jsonify({"error": "Not found"}, 404)
+        abort(404)
 
     data = request.get_json()
     if data is None:
-        return jsonify({"error": "Not a JSON"}, 400)
+        abort(400, "Not a JSON")
 
     for key, value in data.items():
         if key not in ['id', 'state_id', 'created_at', 'updated_at']:

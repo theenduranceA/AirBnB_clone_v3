@@ -4,6 +4,7 @@
 from flask import Flask, request, jsonify, abort
 from api.v1.views import app_views
 from models import Amenity
+from models import storage
 
 
 @app_views.route('/amenities', methods=['GET'], strict_slashes=False)
@@ -39,9 +40,9 @@ def creates_amenity():
     """ Creates amenity."""
     data = request.get_json()
     if data is None:
-        return jsonify({"error": "Not a JSON"}), 400
+        abort(400 "Not a JSON")
     if "name" not in data:
-        return jsonify({"error": "Missing name"}), 400
+        abort("Missing name")
 
     amenity = Amenity(**data)
     amenity.save()
@@ -58,7 +59,7 @@ def updates_amenity(amenity_id):
 
     data = request.get_json()
     if data is None:
-        return jsonify({"error": "Not a JSON"}), 400
+        abort(400, "Not a JSON")
 
     for key, value in data.items():
         if key not in ['id', 'created_at', 'updated_at']:
