@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """Modules for states."""
 
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify
 from api.v1.views import app_views
 from models import storage
 from models.state import State
@@ -19,7 +19,7 @@ def gets_state(state_id):
     """ Retrieves a State object."""
     state = storage.get(State, state_id)
     if state is None:
-        abort(404)
+        return jsonify({"error": "Not found"}, 404)
     return jsonify(state.to_dict())
 
 
@@ -29,20 +29,20 @@ def deletes_state(state_id):
     """ Deletes a State object."""
     state = storage.get(State, state_id)
     if state is None:
-        abort jsonify(404)
-    state.delete()
+        return jsonify({"error": "Not found"}, 404)
+    storage.delete(state)
     storage.save()
     return jsonify({})
 
 
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
 def creates_state():
-    """ Creates a State."""
+    """ Creates a State object."""
     data = request.get_json()
     if data is None:
-        abort(400, "Not a JSON")
+        return jsonify({"error": "Not a JSON"}, 400)
     if 'name' not in data:
-        abort(400, "Missing name")
+        return jsonify({"error": "Missing name"}, 400)
     state = State(**data)
     state.save()
     return jsonify(state.to_dict()), 201
@@ -53,15 +53,15 @@ def updates_state(state_id):
     """ Updates the state object."""
     state = storage.get(State, state_id)
     if state is None:
-        abort(404)
+        return jsonify({"error": "Not found"}, 404)
 
     data = request.get_json()
     if data is None:
-        abort(400, "Not a JSON")
+        return jsonify({"error": "Not a JSON"}, 400)
 
     for key, value in data.items():
         if key not in ['id', 'created_at', 'updated_at']:
             setattr(state, key, value)
 
     state.save()
-    return jsonify(state.to_dict())
+    return jsonify(state.to_dict()), 200
