@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ Module for users."""
 from api.v1.views import app_views
-from flask import abort, jsonify, request
+from flask import Flask, abort, jsonify, request
 from models.user import User
 from models import storage
 
@@ -20,7 +20,7 @@ def gets_user(user_id):
     """ Retrieves a User object."""
     user = User.query.get(user_id)
     if user is None:
-        abort(404, "User not found")
+        abort(404)
     return jsonify(user.to_dict())
 
 
@@ -31,7 +31,7 @@ def deletes_user(user_id):
     """ Deletes a User object."""
     user = User.query.get(user_id)
     if user is None:
-        abort(404, "User not found")
+        abort(404)
     user.delete()
     return jsonify({})
 
@@ -41,7 +41,7 @@ def creates_user():
     """ Creates a user."""
     data = request.get_json()
     if data is None:
-        abort(400 "Not a JSON")
+        abort(400, "Not a JSON")
     if 'email' not in data:
         abort(400, "Missing email")
     if 'password' not in data:
@@ -58,7 +58,7 @@ def update_user(user_id):
     """ Updates a User object."""
     user = User.query.get(user_id)
     if user is None:
-        abort(404, "User not found")
+        abort(404)
 
     data = request.get_json()
     if data is None:
