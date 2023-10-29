@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 """Modules for states."""
 
-import models
-from models.base_model import BaseModel
 from models.state import State
 from flask import Flask, request, jsonify, abort
 from api.v1.views import app_views
