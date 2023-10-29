@@ -4,52 +4,65 @@ from api.v1.views import app_views
 from flask import abort, jsonify, request
 from models.user import User
 from models import storage
- 
 
-@app_views.route('/api/v1/users', methods=['GET'])
-def get_users():
+
+@app_views.route('/api/v1/users', methods=['GET'], strict_slashes=False)
+def get_all_users():
+    """ Retrieves the list of all User objects."""
     users = User.query.all()
     user_list = [user.to_dict() for user in users]
-    return jsonify(user_list), 200
+    return jsonify(user_list)
 
-@app_views.route('/api/v1/users/<int:user_id>', methods=['GET'])
-def get_user(user_id):
+
+@app_views.route(
+        '/api/v1/users/<int:user_id>', methods=['GET'], strict_slashes=False)
+def gets_user(user_id):
+    """ Retrieves a User object."""
     user = User.query.get(user_id)
     if user is None:
-        return jsonify({"error": "User not found"}), 404
-    return jsonify(user.to_dict()), 200
+        abort(404, "User not found")
+    return jsonify(user.to_dict())
 
-@app_views.route('/api/v1/users/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
+
+@app_views.route(
+        '/api/v1/users/<int:user_id>', methods=['DELETE'],
+        strict_slashes=False)
+def deletes_user(user_id):
+    """ Deletes a User object."""
     user = User.query.get(user_id)
     if user is None:
-        return jsonify({"error": "User not found"}), 404
+        abort(404, "User not found")
     user.delete()
-    return jsonify({}), 200
+    return jsonify({})
 
-@app_views.route('/api/v1/users', methods=['POST'])
-def create_user():
+
+@app_views.route('/api/v1/users', methods=['POST'], strict_slashes=False)
+def creates_user():
+    """ Creates a user."""
     data = request.get_json()
     if data is None:
-        return jsonify({"error": "Not a JSON"}), 400
+        abort(400 "Not a JSON")
     if 'email' not in data:
-        return jsonify({"error": "Missing email"}), 400
+        abort(400, "Missing email")
     if 'password' not in data:
-        return jsonify({"error": "Missing password"}), 400
+        abort(400, "Missing password")
 
     user = User(**data)
     user.save()
     return jsonify(user.to_dict()), 201
 
-@app_views.route('/api/v1/users/<int:user_id>', methods=['PUT'])
+
+@app_views.route(
+        '/api/v1/users/<int:user_id>', methods=['PUT'], strict_slashes=False)
 def update_user(user_id):
+    """ Updates a User object."""
     user = User.query.get(user_id)
     if user is None:
-        return jsonify({"error": "User not found"}), 404
+        abort(404, "User not found")
 
     data = request.get_json()
     if data is None:
-        return jsonify({"error": "Not a JSON"}), 400
+        abort(400, "Not a JSON")
 
     for key in ['id', 'email', 'created_at', 'updated_at']:
         data.pop(key, None)
@@ -58,4 +71,4 @@ def update_user(user_id):
         setattr(user, key, value)
 
     user.save()
-    return jsonify(user.to_dict()), 200
+    return jsonify(user.to_dict())
