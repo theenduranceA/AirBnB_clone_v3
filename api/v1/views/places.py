@@ -6,7 +6,7 @@ from models.city import City
 from models.user import User
 from models.amenity import Amenity
 from models.state import State
-from flask import request, jsonify, abort
+from flask import Flask, request, jsonify, abort
 from api.v1.views import app_views
 from models import storage
 
