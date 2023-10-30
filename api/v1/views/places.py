@@ -15,7 +15,7 @@ from models import storage
         '/cities/<city_id>/places', methods=['GET'], strict_slashes=False)
 def get_all_places(city_id):
     """ Retrieves the list of all Place objects of a City."""
-    city = storage.get(Place, city_id)
+    city = storage.get(City, city_id)
     if not city:
         abort(404)
     places = [place.to_dict() for place in city.places]
@@ -47,7 +47,7 @@ def deletes_place(place_id):
         '/cities/<city_id>/places', methods=['POST'], strict_slashes=False)
 def creates_place(city_id):
     """ Creates a Place."""
-    city = storage.get(Place, city_id)
+    city = storage.get(City, city_id)
     if not city:
         abort(404)
     data = request.get_json()
@@ -55,7 +55,7 @@ def creates_place(city_id):
         abort(400, 'Not a JSON')
     if 'user_id' not in data:
         abort(400, "Missing user_id")
-    user = User.get(data['user_id'])
+    user = storage.get(User, data['user_id'])
     if not user:
         abort(404)
     if 'name' not in data:
@@ -69,7 +69,7 @@ def creates_place(city_id):
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
 def updates_place(place_id):
     """ Updates a Place object."""
-    place = Place.get(place_id)
+    place = storage.get(Place, place_id)
     if not place:
         abort(404)
     data = request.get_json()
