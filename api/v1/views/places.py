@@ -69,13 +69,13 @@ def creates_place(city_id):
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
 def updates_place(place_id):
     """Updates a place by ID"""
-    data = request.get_json()
-    if not data:
-        abort(400, "Not a JSON")
-
     place = storage.get(Place, place_id)
     if place is None:
         abort(404)
+
+    data = request.get_json()
+    if not data:
+        abort(400, "Not a JSON")
 
     for key, value in data.items():
         if key not in ['id', 'user_id', 'city_id', 'created_at', 'updated']:
@@ -124,6 +124,3 @@ def searches_place_objects():
     places = [place.to_dict(exclude=['amenities']) for place in my_places]
 
     return jsonify(places)
-
-
-
