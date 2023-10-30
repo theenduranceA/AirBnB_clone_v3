@@ -83,7 +83,8 @@ def updates_place(place_id):
 
 
 @app_views.route('/places_search', methods=['POST'], strict_slashes=False)
-def searches_places():
+def searches_place_objects():
+    """ Retrieves all Place objects."""
     data = request.get_json()
 
     if not data:
@@ -93,9 +94,7 @@ def searches_places():
     cities = data.get('cities', [])
     amenities = data.get('amenities', [])
 
-    if not states and
-    not cities and
-    not amenities:
+    if not states and not cities and not amenities:
         places = [place.to_dict() for place in Place.all()]
         return jsonify(places)
 
