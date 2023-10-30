@@ -12,8 +12,9 @@ from models.user import User
 @app_views.route(
         '/places/<place_id>/reviews', methods=['GET'], strict_slashes=False)
 def get_reviews(place_id):
+    """ Retrieves a Review object."""
     place = storage.get(Place, place_id)
-    if not place:
+    if place is None:
         abort(404)
     return jsonify[review.to_dict() for review in place.reviews]
 
@@ -22,7 +23,7 @@ def get_reviews(place_id):
 def gets_review(review_id):
     """ Retrieves a Place object."""
     review = storage.get(Review, review_id)
-    if not review:
+    if review is None:
         abort(404)
     return jsonify(review.to_dict())
 
@@ -32,7 +33,7 @@ def gets_review(review_id):
 def deletes_review(review_id):
     """ Deletes a Place object."""
     review = storage.get(Review, review_id)
-    if not review:
+    if review is None:
         abort(404)
     review.delete()
     storage.save()
@@ -44,7 +45,7 @@ def deletes_review(review_id):
 def creates_review(place_id):
     """ Creates a Review."""
     place = storage.get(Place, place_id)
-    if not place:
+    if place is None:
         abort(404)
     data = request.get_json()
     if not data:
@@ -66,7 +67,7 @@ def creates_review(place_id):
 def updates_review(review_id):
     """ Updates a Review object."""
     review = storage.get(Review, review_id)
-    if not review:
+    if review is None:
         abort(404)
     data = request.get_json()
     if not data:
