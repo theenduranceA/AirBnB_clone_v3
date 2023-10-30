@@ -6,15 +6,14 @@ from models.user import User
 from models import storage
 
 
-@app_views.route('/api/v1/users', methods=['GET'], strict_slashes=False)
+@app_views.route('/users', methods=['GET'], strict_slashes=False)
 def get_all_users():
     """ Retrieves the list of all User objects."""
     all_users = [user.to_dict() for user in storage.all(User).values()]
     return jsonify(all_users)
 
 
-@app_views.route(
-        '/api/v1/users/<int:user_id>', methods=['GET'], strict_slashes=False)
+@app_views.route('/users/<user_id>', methods=['GET'], strict_slashes=False)
 def gets_user(user_id):
     """ Retrieves a User object."""
     user = storage.get(User, user_id)
@@ -23,9 +22,7 @@ def gets_user(user_id):
     return jsonify(user.to_dict())
 
 
-@app_views.route(
-        '/api/v1/users/<int:user_id>', methods=['DELETE'],
-        strict_slashes=False)
+@app_views.route('/users/<user_id>', methods=['DELETE'], strict_slashes=False)
 def deletes_user(user_id):
     """ Deletes a User object."""
     user = storage.get(User, user_id)
@@ -36,7 +33,7 @@ def deletes_user(user_id):
     return jsonify({})
 
 
-@app_views.route('/api/v1/users', methods=['POST'], strict_slashes=False)
+@app_views.route('users', methods=['POST'], strict_slashes=False)
 def creates_user():
     """ Creates a user."""
     data = request.get_json()
@@ -52,8 +49,7 @@ def creates_user():
     return jsonify(user.to_dict()), 201
 
 
-@app_views.route(
-        '/api/v1/users/<int:user_id>', methods=['PUT'], strict_slashes=False)
+@app_views.route('users/<user_id>', methods=['PUT'], strict_slashes=False)
 def update_user(user_id):
     """ Updates a User object."""
     user = storage.get(User, user_id)
