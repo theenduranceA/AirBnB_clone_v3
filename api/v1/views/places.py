@@ -66,9 +66,8 @@ def creates_place(city_id):
     return jsonify(new_place.to_dict()), 201
 
 
-@app_views.route(
-        '/places/<string:place_id>', methods=['PUT'], strict_slashes=False)
-def updates_place_by_id(place_id):
+@app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
+def updates_place(place_id):
     """Updates a place by ID"""
     data = request.get_json()
     if not data:
@@ -101,20 +100,20 @@ def searches_place_objects():
         places = [place.to_dict() for place in storage.all(Place).values()]
         return jsonify(places)
 
-    my_places = set()
+    my_places = []
 
     for state_id in states:
         state = storage.get(State, state_id)
         if state:
-            my_places.update(state.cities)
+            my_places.append(state.cities)
 
     for city_id in cities:
         city = storage.get(City, city_id)
         if city:
-            my_places.update(city.places)
+            my_places.append(city.places)
 
     if not my_places:
-        my_places = set(storage.all(Place).values())
+        my_places = (storage.all(Place).values())
 
     for amenity_id in amenities:
         amenity = storage.get(Amenity, amenity_id)
@@ -125,3 +124,6 @@ def searches_place_objects():
     places = [place.to_dict(exclude=['amenities']) for place in my_places]
 
     return jsonify(places)
+
+
+
