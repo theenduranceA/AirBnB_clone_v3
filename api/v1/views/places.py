@@ -70,13 +70,13 @@ def creates_place(city_id):
         '/places/<string:place_id>', methods=['PUT'], strict_slashes=False)
 def updates_place(place_id):
     """Updates a place."""
-    data = request.get_json()
-    if not data:
-        abort(400, "Not a JSON")
-
     place = storage.get(Place, place_id)
     if place is None:
         abort(404)
+
+    data = request.get_json()
+    if not data:
+        abort(400, "Not a JSON")
 
     for key, value in data.items():
         if key not in ['id', 'user_id', 'city_id', 'created_at', 'updated']:
