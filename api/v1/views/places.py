@@ -114,7 +114,7 @@ def searches_place_objects():
                         places = city.places
                         for place in places:
                             if place:
-                                my_places.append(place)
+                                my_places.add(place)
 
     if cities:
         for city_id in cities:
@@ -123,7 +123,7 @@ def searches_place_objects():
                 places = city.places
                 for place in places:
                     if place:
-                        my_places.append(place)
+                        my_places.add(place)
 
     places_searched = set(my_places)
 
