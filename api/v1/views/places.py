@@ -67,7 +67,7 @@ def creates_place(city_id):
 
 
 @app_views.route(
-        '/places/<string:place_id>', methods=['PUT'], strict_slashes=False)
+        '/places/<place_id>', methods=['PUT'], strict_slashes=False)
 def updates_place(place_id):
     """Updates a place."""
     place = storage.get(Place, place_id)
@@ -90,6 +90,7 @@ def updates_place(place_id):
 def searches_place_objects():
     """ Retrieves all Place object."""
     data = request.get_json()
+
     if data is None:
         abort(400, "Not a JSON")
 
@@ -129,7 +130,7 @@ def searches_place_objects():
 
     if amenities:
         for amenity_id in amenities:
-            for place in my_places.copy():
+            for place in places_searched.copy():
                 place_amenities = place.amenities
                 if not all(amenity.id == amenity_id
                            for amenity in place_amenities):
