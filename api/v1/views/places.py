@@ -133,7 +133,7 @@ def searches_place_objects():
                 place_amenities = place.amenities
                 if not all(amenity.id == amenity_id
                            for amenity in place_amenities):
-                    places_searched.pop(place)
+                    places_searched.remove(place)
 
     final_places = [place.to_dict() for place in places_searched]
 
