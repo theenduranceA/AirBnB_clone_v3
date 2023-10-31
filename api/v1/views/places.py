@@ -90,7 +90,7 @@ def updates_place(place_id):
 def searches_place_objects():
     """ Retrieves all Place object."""
     data = request.get_json()
-    if not data:
+    if data is None:
         abort(400, "Not a JSON")
 
     states = data.get('states', [])
@@ -98,8 +98,9 @@ def searches_place_objects():
     amenities = data.get('amenities', [])
 
     if not states and not cities and not amenities:
-        places = [place.to_dict() for place in storage.all(Place).values()]
-        return jsonify(places)
+        places = storage.all(Place).values()
+        search_places = [place.to_dict() for place in places]
+        return jsonify(search_places)
 
     my_places = set()
 
