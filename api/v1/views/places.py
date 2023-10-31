@@ -89,6 +89,7 @@ def updates_place(place_id):
 def searches_place_objects():
     """ Retrieves all Place object."""
     data = request.get_json()
+
     if not data:
         abort(400, "Not a JSON")
 
@@ -96,7 +97,7 @@ def searches_place_objects():
     cities = data.get('cities', [])
     amenities = data.get('amenities', [])
 
-    if not states and not cities and not amenities:
+    if not any([states, cities, amenities]):
         places = [place.to_dict() for place in storage.all(Place).values()]
         return jsonify(places)
 
@@ -105,22 +106,23 @@ def searches_place_objects():
     for state_id in states:
         state = storage.get(State, state_id)
         if state:
-            my_places.append(state.cities)
+            for city in state.cities:
+                my_places.append(city.places)
 
     for city_id in cities:
         city = storage.get(City, city_id)
         if city:
             my_places.append(city.places)
 
-    if not my_places:
-        my_places = (storage.all(Place).values())
+    if not my_places or amenities:
+        if not my_places:
+            my_places = [place for place in storage.all(Place).values()]
 
-    for amenity_id in amenities:
-        amenity = storage.get(Amenity, amenity_id)
-        if amenity:
-            my_places = [
-                    place for place in my_places if amenity in place.amenities]
+        amenities_obj = [
+                storage.get(Amenity, amenity_id) for amenity_id in amenities]
+        my_places = [
+                place for place in my_places if all(
+                    amenity in place.amenities for amenity in amenities_obj)]
 
     places = [place.to_dict(exclude=['amenities']) for place in my_places]
-
     return jsonify(places)
